@@ -30,6 +30,8 @@ def handle_inline_result(bot, update):
             )
             query.edit_message_text(
                 text="Selected option, factor: %s" % factor)
+        else:
+            query.edit_message_text("Clicked deposit, a transaction link should follow if you run the right client")
         query.answer()
         s.commit()
     finally:

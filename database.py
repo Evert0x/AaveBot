@@ -12,6 +12,29 @@ Base = declarative_base()
 engine = create_engine('sqlite:///meme.db')
 Session = sessionmaker(bind=engine)
 
+class TxCall(Base):
+    __tablename__ = "txcalls"
+
+    code = Column(String(32), primary_key=True)
+    userid = Column(String(64), nullable=False)
+    address = Column(String(64), nullable=False)
+    msg_id = Column(Integer, nullable=False)
+
+    @staticmethod
+    def insert(s, code, userid, address, msg_id):
+        x = TxCall(
+            code=code,
+            userid=userid,
+            address=address,
+            msg_id=msg_id
+        )
+        s.add(x)
+        return x
+
+    @staticmethod
+    def get(s, code):
+        return s.query(TxCall).filter(TxCall.code == code).first()
+
 class HealthNotification(Base):
     __tablename__ = "health_notification"
 
