@@ -2,6 +2,7 @@ from tg import main
 import threading,settings
 import sys
 from server import app as flaskapp
+from workers.montor_health import run
 threads = []
 
 def signal_handler(sig, frame):
@@ -19,6 +20,10 @@ def create_app():
     t1 = threading.Thread(name="tgbot", target=main)
     t1.start()
     threads.append(t1)
+
+    t2 = threading.Thread(name="health", target=run)
+    t2.start()
+    threads.append(t2)
     return flaskapp
 
 app = create_app()

@@ -1,10 +1,13 @@
 from telegram.ext import Updater, MessageHandler, Filters, CallbackQueryHandler
+from telegram import InlineKeyboardMarkup, InlineKeyboardButton
 import logg
 import settings
 import threading
 import time
 from ethadress import get_eth_address
 from aave.code import do
+from workers.montor_health import do as health
+import database
 
 import traceback
 def error(update, context, error):
@@ -13,14 +16,59 @@ def error(update, context, error):
     logg.ERROR.warning(traceback.format_exc())
 
 def handle_inline_result(bot, update):
-    query = update.callback_query
-    query.answer()
-    query.edit_message_text(text="Selected option:s".format(query.data))
+    s = database.Session()
+    try:
+        query = update.callback_query
+        data = query.data
+        if data.startswith("health"):
+            factor = float(data.split(":")[1])
+            database.HealthNotification.upsert(
+                s,
+                update.effective_user.id,
+                get_eth_address(update.effective_user.id),
+                factor
+            )
+            query.edit_message_text(
+                text="Selected option, factor: %s" % factor)
+        query.answer()
+        s.commit()
+    finally:
+        s.close()
 
 def handle_update_message(bot, update):
-    address = get_eth_address(update.effective_user.id)
-    data = do(address, human=True)
-    update.message.reply_text("Hello your current health factor is %s" % data["healthFactor"])
+    if "/risk" in update.message.text:
+        s = database.Session()
+        d = database.HealthNotification.get(s, update.effective_user.id)
+        health(d)
+        s.close()
+    elif "/start" in update.message.text:
+        address = get_eth_address(update.effective_user.id)
+        data = do(address, human=True)
+        update.message.reply_text(
+            "Hello your current health factor is <b>%s</b>, if your health factor gets "
+            "below <b>1</b>, your are at risk to get liquidated, at what factor do you "
+            "want to receive a notification?" % data["healthFactor"],
+            parse_mode="html",
+            reply_markup=InlineKeyboardMarkup([[
+                InlineKeyboardButton(
+                    text="1.1",
+                    # function-gwei-args
+                    callback_data="health:1.1"
+                ),
+                InlineKeyboardButton(
+                    text="1.25",
+                    # function-gwei-args
+                    callback_data="health:1.25"
+                ),
+                InlineKeyboardButton(
+                    text="1.5",
+                    # function-gwei-args
+                    callback_data="health:1.5"
+                )
+            ]]),
+        )
+    else:
+        update.message.reply_text("try /start or /risk")
 
 def main():
     """Start the bot."""
