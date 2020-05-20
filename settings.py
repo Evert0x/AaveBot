@@ -19,3 +19,5 @@ with open(os.path.join("aave", "abi", "LP.json")) as json_data:
     LP_ABI = json.load(json_data)
 CONTRACT_LP = ENDPOINT.eth.contract(address=LP, abi=LP_ABI)
 CONTRACT_LP_WS = ENDPOINT_WS.eth.contract(address=LP, abi=LP_ABI)
+
+ETH_PRICE = 210.0
