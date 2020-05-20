@@ -4,6 +4,7 @@ import settings
 import threading
 import time
 from ethadress import get_eth_address
+from aave.code import do
 
 import traceback
 def error(update, context, error):
@@ -17,7 +18,9 @@ def handle_inline_result(bot, update):
     query.edit_message_text(text="Selected option:s".format(query.data))
 
 def handle_update_message(bot, update):
-    update.message.reply_text("Hello %s" % get_eth_address(update.effective_user.id))
+    address = get_eth_address(update.effective_user.id)
+    data = do(address, human=True)
+    update.message.reply_text("Hello your current health factor is %s" % data["healthFactor"])
 
 def main():
     """Start the bot."""
