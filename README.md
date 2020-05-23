@@ -1,5 +1,5 @@
 # AaveBot
-Telegram chatbot for liquidation warnings of Aave positions
+Telegram chatbot for liquidation warnings of Aave positions, made during https://hackathon.money/.
 
 Start chatting with https://t.me/EasyAave_bot
 
