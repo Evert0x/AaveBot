@@ -45,6 +45,13 @@ def handle_update_message(bot, update):
         s.close()
     elif "/start" in update.message.text:
         address = get_eth_address(update.effective_user.id)
+        if not address:
+            update.message.reply_text("Could not find linked ethereum address")
+            update.message.reply_text("Please talk to %s or download the following client: %s\n\n"
+                                      "Press /start after linking your address." % (
+                "@EasyEthereum_bot", "https://github.com/Evert0x/Telegram"
+            ))
+            return
         data = do(address, human=True)
         update.message.reply_text(
             "Hello your current health factor is <b>%s</b>, if your health factor gets "
