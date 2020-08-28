@@ -1,10 +1,9 @@
 import os, json
 from decouple import config
+os.environ["TOTALITY_ENDPOINT"] = config("TOTALITY_ENDPOINT")
+
 from web3 import Web3, HTTPProvider, WebsocketProvider
 BOT_TOKEN=config("BOT_TOKEN")
-MAPPER=config("MAPPER")
-FLASK_HOST=config("FLASK_HOST", default="localhost")
-FLASK_PORT=config("FLASK_PORT", cast=int, default=5000)
 
 ENDPOINT = Web3(HTTPProvider(config('PROVIDER')))
 ENDPOINT_WS = Web3(WebsocketProvider(config('PROVIDER_WS')))

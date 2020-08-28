@@ -3,22 +3,21 @@ import logg
 import settings
 import threading
 import time
-from ethadress import get_eth_address
 from aave.code import do
 
 import traceback
-def error(update, context, error):
+def error(update, error):
     """Log Errors caused by Updates."""
-    logg.ERROR.warning('Update "%s" caused error "%s", error: %s', update, context, error)
+    logg.ERROR.warning('Update "%s" caused error "%s"', update, error)
     logg.ERROR.warning(traceback.format_exc())
 
-def handle_inline_result(bot, update):
+def handle_inline_result(update, context):
     query = update.callback_query
     query.answer()
     query.edit_message_text(text="Selected option:s".format(query.data))
 
-def handle_update_message(bot, update):
-    address = get_eth_address(update.effective_user.id)
+def handle_update_message(update, context):
+    address = update.effective_user.address
     data = do(address, human=True)
     update.message.reply_text("Hello your current health factor is %s" % data["healthFactor"])
 
@@ -27,7 +26,7 @@ def main():
     # Create the Updater and pass it your bot's token.
     # Make sure to set use_context=True to use the new context based callbacks
     # Post version 12 this will no longer be necessary
-    updater = Updater(settings.BOT_TOKEN)
+    updater = Updater(settings.BOT_TOKEN, use_context=True)
     # Get the dispatcher to register handlers
     dp = updater.dispatcher
 
@@ -44,9 +43,4 @@ def main():
     # Run the bot until you press Ctrl-C or the process receives SIGINT,
     # SIGTERM or SIGABRT. This should be used most of the time, since
     # start_polling() is non-blocking and will stop the bot gracefully.
-    t = threading.current_thread()
-    while True:
-        if not getattr(t, "do_run", True):
-            updater.stop()
-            break
-        time.sleep(1)
+    updater.idle()
