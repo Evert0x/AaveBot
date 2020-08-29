@@ -91,13 +91,12 @@ def handle_overview(update, context):
     balance = aave.get_user_balance(address, human=True)
 
     canDeposit = []
-    msg = "<b>Coin</b>\taToken/Total\n"
+    msg = ""
     for ticker, balances in balance.items():
         if balances["balance"] == 0 and balances["aBalance"] == 0:
             continue
-        t = "<b>%s</b>\t<code>%s/%s</code> %s%% APY\n" % (ticker, balances["aBalance"],
-            round(balances["aBalance"] + balances["balance"], 2),
-            balances["APY"])
+        t = "<code>%s</code> <b>%s</b>. <i>%s%%</i> APY\n" % (
+            balances["aBalance"],ticker,  balances["APY"])
         msg += t
 
         if balances["balance"] > 0:
