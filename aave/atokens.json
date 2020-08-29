@@ -1,0 +1,79 @@
+{
+    "ETH": {
+        "regular": "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
+        "aave": "0x2433A1b6FcF156956599280C3Eb1863247CFE675"
+    },
+    "DAI": {
+        "regular": "0xf80A32A835F79D7787E8a8ee5721D0fEaFd78108",
+        "aave": "0xcB1Fe6F440c49E9290c3eb7f158534c2dC374201"
+    },
+    "USDC": {
+        "regular": "0x851dEf71f0e6A903375C1e536Bd9ff1684BAD802",
+        "aave": "0x2dB6a31f973Ec26F5e17895f0741BB5965d5Ae15"
+    },
+    "SUSD": {
+        "regular": "0xc374eB17f665914c714Ac4cdC8AF3a3474228cc5",
+        "aave": "0x5D17e0ea2d886F865E40176D71dbc0b59a54d8c1"
+    },
+    "TUSD": {
+        "regular": "0xa51EE1845C13Cb03FcA998304b00EcC407fc1F92",
+        "aave": "0x82F01c5694f36690a985F01dC0aD46e1B20E7a1a"
+    },
+    "USDT": {
+        "regular": "0xB404c51BBC10dcBE948077F18a4B8E553D160084",
+        "aave": "0x790744bC4257B4a0519a3C5649Ac1d16DDaFAE0D"
+    },
+    "BUSD": {
+        "regular": "0xFA6adcFf6A90c11f31Bc9bb59eC0a6efB38381C6",
+        "aave": "0x81E065164bAC7203c3bFEB1a749F48a64383c6eE"
+    },
+    "BAT": {
+        "regular": "0x85B24b3517E3aC7bf72a14516160541A60cFF19d",
+        "aave": "0x0D0Ff1C81F2Fbc8cbafA8Df4bF668f5ba963Dab4"
+    },
+    "ENJ": {
+
+    },
+    "KNC": {
+        "regular": "0xCe4aA1dE3091033Ba74FA2Ad951f6adc5E5cF361",
+        "aave": "0xCf6efd4528d27Df440fdd585a116D3c1fC5aDdEe"
+    },
+    "LEND": {
+        "regular": "0x217b896620AfF6518B9862160606695607A63442",
+        "aave": "0x383261d0e287f0A641322AEB15E3da50147Dd36b"
+    },
+    "LINK": {
+        "regular": "0x1a906E71FF9e28d8E01460639EB8CF0a6f0e2486",
+        "aave": "0x52fd99c15e6FFf8D4CF1B83b2263a501FDd78973"
+    },
+    "MANA": {
+        "regular": "0x78b1F763857C8645E46eAdD9540882905ff32Db7",
+        "aave": "0x8e96a4068da80F66ef1CFc7987f0F834c26106fa"
+    },
+    "MKR": {
+        "regular": "0x2eA9df3bABe04451c9C3B06a2c844587c59d9C37",
+        "aave": "0xEd6A5d671f7c55aa029cbAEa2e5E9A18E9d6a1CE"
+    },
+    "REN": {
+
+    },
+    "REP": {
+        "regular": "0xBeb13523503d35F9b3708ca577CdCCAdbFB236bD",
+        "aave": "0xE4B92BcDB2f972e1ccc069D4dB33d5f6363738dE"
+    },
+    "SNX": {
+
+    },
+    "WBTC": {
+        "regular": "0xa0E54Ab6AA5f0bf1D62EC3526436F3c05b3348A0",
+        "aave": "0xA1c4dB01F8344eCb11219714706C82f0c0c64841"
+    },
+    "YFI": {
+
+    },
+    "ZRX": {
+        "regular": "0x02d7055704EfF050323A2E5ee4ba05DB2A588959",
+        "aave": "0x5BDC773c9D3515a5e3Dd415428F92a90E8e63Ae4"
+    }
+}
+
