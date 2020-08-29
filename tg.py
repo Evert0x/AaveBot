@@ -9,32 +9,46 @@ import time
 import aave.code as aave
 
 import traceback
-AMOUNT = range(1)
+AMOUNT, APPROVAL = range(2)
 def error(update, error):
     """Log Errors caused by Updates."""
     logg.ERROR.warning('Update "%s" caused error "%s"', update, error)
     logg.ERROR.warning(traceback.format_exc())
 
+def approval(update, context):
+    pass
+
 def deposit_amount(update, context):
+    amount = float(update.message.text)
     ticker = context.user_data.get("ticker")
     if not ticker:
         update.message.reply_text("please select a ticker")
         return
-    if float(update.message.text) > ticker["m"]:
+    if amount > ticker["m"]:
         update.message.reply_text("It exceeds your max amount of %s" % ticker["m"])
         return
 
+    contract = settings.ENDPOINT.eth.contract(address=aave.atokens[ticker["t"]]["regular"], abi=aave.aTokenAbi)
+    allowance = contract.functions.allowance(update.effective_user.address, settings.LPCore).call()
+    if allowance < amount:
+        keyboard = InlineTotalityMarkup(
+            contract.functions.approve(settings.LPCore, 2**255),
+            Web3.toWei("2", "gwei"),
+            500000
+        )
+        update.message.reply_text("You need to up your allowance first", reply_markup=keyboard)
+        return
     weiValue = 0
     if ticker["t"] == "ETH":
-        weiValue = Web3.toWei(float(update.message.text), 'ether')
+        weiValue = Web3.toWei(amount, 'ether')
 
     keyboard = InlineTotalityMarkup(settings.CONTRACT_LP.functions.deposit(
             Web3.toChecksumAddress(aave.atokens[ticker["t"]]["regular"]),
-            Web3.toWei(float(update.message.text), 'ether'),
+            Web3.toWei(amount, 'ether'),
             0
     ), Web3.toWei("2", "gwei"), 500000, weiValue=weiValue)
 
-    update.message.reply_text('Deposit %s %s' % (update.message.text, ticker["t"]), reply_markup=keyboard)
+    update.message.reply_text('Deposit %s %s' % (amount, ticker["t"]), reply_markup=keyboard)
     del context.user_data["ticker"]
     return ConversationHandler.END
 
@@ -44,15 +58,19 @@ def handle_inline_result(update, context):
     if query.data.startswith("tg"):
         if context.totality["canceled"]:
             if context.totality["tx"]:
-                return query.edit_message_text(text="You clicked cancel BUT got tx: %s" % context.totality["tx"])
-            return query.edit_message_text(text="You clicked cancel")
+                return query.edit_message_text(
+                    text="Oops.. you canceled the transaction but: <i>%s</i>, is found" % context.totality["tx"]["tx"],
+                    parse_mode="HTML")
+            return query.edit_message_text(text="The transaction is canceled")
 
         if not context.totality["tx"]:
-            query.edit_message_text(text="<b>Please chose custodial bot</b>\n%s" % update.callback_query.message.text,
+            query.edit_message_text(text="<b>Please click on custodial bot</b>\n%s" % update.callback_query.message.text,
             reply_markup=update.callback_query.message.reply_markup,
             parse_mode="HTML")
         else:
-            query.edit_message_text(text="You clicked do with tx: %s" % context.totality["tx"])
+            query.edit_message_text(
+                text="Great! The transaction is pending. hash: <i>%s</i>" % context.totality["tx"]["tx"],
+                parse_mode="HTML")
         return
 
     balance = aave.get_user_balance(update.effective_user.address, filter_ticker=query.data, human=True)[query.data]

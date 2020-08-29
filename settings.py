@@ -9,6 +9,7 @@ ENDPOINT = Web3(HTTPProvider(config('PROVIDER')))
 ENDPOINT_WS = Web3(WebsocketProvider(config('PROVIDER_WS')))
 
 LPAddressProvider=config("LPAddressProvider")
+LPCore=config("LPCore")
 with open(os.path.join("aave", "abi", "LPAddressProvider.json")) as json_data:
     LPAddressProvider_ABI = json.load(json_data)
 CONTRACT_LPAddressProvider = ENDPOINT.eth.contract(address=LPAddressProvider, abi=LPAddressProvider_ABI)
