@@ -10,17 +10,16 @@ with open(os.path.join("aave", "atokens.json")) as f:
 with open(os.path.join("aave", "abi", "AToken.json")) as json_data:
     aTokenAbi = json.load(json_data)
 
-def get_user_balance(user, human=False):
+def get_user_balance(user, filter_ticker=None, human=False):
     data = {}
-    # if os.path.exists("user.json"):
-    #     with open("temp.json", "r") as f:
-    #         return json.load(f)
     for ticker, contracts in atokens.items():
         if not contracts.get("aave"):
             continue
 
+        if filter_ticker and ticker != filter_ticker:
+            continue
+
         reserveData = settings.CONTRACT_LP.functions.getUserReserveData(contracts["regular"], user).call()
-        print(reserveData)
         aBalance = reserveData[0]
         liquidityRate = reserveData[5]
 
@@ -40,8 +39,6 @@ def get_user_balance(user, human=False):
             "aBalance": aBalance,
             "APY": liquidityRate
         }
-    # with open("user.json", "w+") as f:
-    #     json.dump(data, f, indent=4)
     return data
 
 def get_user_account_data(address, human=False):
