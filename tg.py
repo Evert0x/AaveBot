@@ -9,14 +9,11 @@ import time
 import aave.code as aave
 
 import traceback
-AMOUNT, APPROVAL = range(2)
+AMOUNT = range(1)
 def error(update, error):
     """Log Errors caused by Updates."""
     logg.ERROR.warning('Update "%s" caused error "%s"', update, error)
     logg.ERROR.warning(traceback.format_exc())
-
-def approval(update, context):
-    pass
 
 def deposit_amount(update, context):
     amount = float(update.message.text)
@@ -83,7 +80,7 @@ def handle_inline_result(update, context):
 def handle_overview(update, context):
     address = update.effective_user.address
     if not address:
-        update.message.reply_text("You did not link your Ethereum address to your telegram account yet,"
+        update.message.reply_text("You did not link your Ethereum address to your telegram account yet, "
             "please download the Totality fork or get in contact with @custodialbot")
         return
 
@@ -95,7 +92,7 @@ def handle_overview(update, context):
     for ticker, balances in balance.items():
         if balances["balance"] == 0 and balances["aBalance"] == 0:
             continue
-        t = "<code>%s</code> <b>%s</b>. <i>%s%%</i> APY\n" % (
+        t = "<code>%s</code> a<b>%s</b>. <i>%s%%</i> APY\n" % (
             balances["aBalance"],ticker,  balances["APY"])
         msg += t
 
@@ -108,7 +105,7 @@ def handle_overview(update, context):
         for ticker in canDeposit:
             keyboard.append(InlineKeyboardButton(ticker, callback_data=ticker))
         reply_markup = InlineKeyboardMarkup([keyboard])
-        update.message.reply_text("You are able to convert your tokens to Atokens to receive interest", reply_markup=reply_markup)
+        update.message.reply_text("You are able to convert your tokens to aTokens to receive interest", reply_markup=reply_markup)
         return AMOUNT
 
 def handle_update_message(update, context):
@@ -118,10 +115,23 @@ def handle_update_message(update, context):
         if address:
             update.message.reply_text("Your current address is <b>%s</b>, do you want to get an overview of your positions? press /overview" % address, parse_mode="HTML")
         else:
-            update.message.reply_text("You did not link your Ethereum address to your telegram account yet,"
+            update.message.reply_text("You did not link your Ethereum address to your telegram account yet, "
             "please download the Totality fork or get in contact with @custodialbot")
         return
+    if update.message.text == "/help":
+        update.message.reply_text("""This Aave bot is based on the Totality protocol.
+Currently you are only able to deposit and view your Aave deposit positions.
 
+    /start - get started
+    /overview - get an overview of your Aave positions
+
+In the future the following features will be developed
+- Overview of your borrow positions
+- Able to borrow
+- Able to repay
+- Able to withdraw
+- Notification if your health factor decreases
+""")
 
 def main():
     """Start the bot."""
@@ -149,7 +159,7 @@ def main():
     dp.add_handler(MessageHandler(Filters.command, handle_update_message))
     dp.add_handler(CallbackQueryHandler(handle_inline_result))
     # log all errors
-    #dp.add_error_handler(error)
+    dp.add_error_handler(error)
 
     # Start the Bot
     updater.start_polling()
